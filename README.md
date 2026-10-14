@@ -1,3 +1,5 @@
+![Pokemon Card Totals](Images/PCT.png)
+
 # Pokémon Card Totals
 
 A glassy yellow Docker widget showing ENG and JAP Pokémon card totals from TCGdex, with manual refresh, update timestamps, and persistent saved totals. Suitable for a dashboard iframe or Homarr embed.
