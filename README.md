@@ -60,3 +60,9 @@ python -m unittest discover -s tests -v
 ```
 
 Pokémon is a trademark of its respective owners. This project is unofficial. Card data is supplied by TCGdex.
+
+## v0.2.0: appearance and changes
+
+Open the small settings gear to choose Pikachu Gold, Gengar Purple, Charizard Ember, Blastoise Blue, or Poké Ball Classic. The Compact mode switch hides timestamps and secondary text. Preferences are saved in this browser when browser storage is available. Settings temporarily expand the tile; increase tile height to use them if necessary.
+
+After each successful refresh, the change since that language's previous successful refresh appears below its total. First fetch establishes a baseline. Zero shows No change; negative changes are labelled database adjustments. These are net database count changes, not a list of newly released cards. Failed refreshes retain the baseline and hide the change until a successful retry.

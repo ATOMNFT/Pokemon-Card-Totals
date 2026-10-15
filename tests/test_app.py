@@ -30,3 +30,18 @@ class Counts(unittest.TestCase):
             self.assertIsNone(result['languages']['ja']['error'])
 
 if __name__=='__main__': unittest.main()
+
+class Changes(unittest.TestCase):
+    def test_delta_baselines_and_failures(self):
+        with tempfile.TemporaryDirectory() as folder, patch('app.CACHE', Path(folder)/'totals.json'):
+            with patch('app.count_cards', return_value=100): result=app.refresh()
+            self.assertIsNone(result['languages']['en']['delta'])
+            with patch('app.count_cards', return_value=124): result=app.refresh()
+            self.assertEqual(result['languages']['en']['delta'],24)
+            with patch('app.count_cards', side_effect=OSError()): app.refresh()
+            with patch('app.count_cards', return_value=130): result=app.refresh()
+            self.assertEqual(result['languages']['en']['delta'],6)
+            with patch('app.count_cards', return_value=120): result=app.refresh()
+            self.assertEqual(result['languages']['en']['delta'],-10)
+            with patch('app.count_cards', return_value=120): result=app.refresh()
+            self.assertEqual(result['languages']['en']['delta'],0)

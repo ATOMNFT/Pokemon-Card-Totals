@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.request import Request, urlopen
+from urllib.parse import urlsplit
 
 CACHE = Path(os.environ.get('DATA_DIR', '/data')) / 'totals.json'
 LOCK = threading.Lock()
@@ -46,7 +47,9 @@ def refresh():
             for lang, future in futures.items():
                 item = data['languages'].setdefault(lang, {})
                 try:
-                    item.update(total=future.result(), updated_at=now(), error=None)
+                    total = future.result()
+                    previous = item.get('total')
+                    item.update(total=total, delta=total-previous if isinstance(previous, int) else None, updated_at=now(), error=None)
                 except Exception:
                     item['error'] = 'Could not reach or validate TCGdex. Try refreshing again.'
         try:
@@ -68,7 +71,7 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(content)
 
     def do_GET(self):
-        if self.path == '/':
+        if urlsplit(self.path).path == '/':
             self.send(200, STATIC.read_bytes(), 'text/html; charset=utf-8')
         elif self.path == '/api/totals':
             with LOCK:
